@@ -2,6 +2,7 @@ package me.weiking1021.fcu.assembler.compiler;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class AssemblerIO {
@@ -61,5 +62,69 @@ public class AssemblerIO {
         }
 
         return resultList;
+    }
+
+    public static List<String> writeObjectCodes(OutputStream outputStream, AssemblerObjectCode objectCode) throws IOException {
+
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+
+        writer.write("H");
+        writer.write(String.format("%6s", objectCode.programName));
+        writer.write(ByteUtil.toHexText(objectCode.startAddress, 3));
+        writer.write(ByteUtil.toHexText(objectCode.programByteLength, 3));
+        writer.write(System.lineSeparator());
+
+        Iterator<AssemblerObjectCode.TextRecord> iterator = objectCode.textRecords.iterator();
+
+        int bytesCounter = 0;
+        List<AssemblerObjectCode.TextRecord> recordTmp = new ArrayList<>();
+
+        while (iterator.hasNext()) {
+
+            AssemblerObjectCode.TextRecord next = iterator.next();
+
+            if (bytesCounter + next.objects().length * 2 < 60) {
+
+                recordTmp.add(next);
+                bytesCounter += next.objects().length * 2;
+
+                continue;
+            }
+
+            AssemblerObjectCode.TextRecord first = recordTmp.get(0);
+
+            writer.write("T");
+            writer.write(ByteUtil.toHexText(first.address(), 3));
+            writer.write(ByteUtil.toHexText(bytesCounter, 1));
+
+            for (AssemblerObjectCode.TextRecord textRecord : recordTmp)
+                writer.write(ByteUtil.toHexText(textRecord.objects()));
+
+            writer.write(System.lineSeparator());
+
+            bytesCounter = 0;
+            recordTmp.clear();
+        }
+
+        if (!recordTmp.isEmpty()) {
+
+            AssemblerObjectCode.TextRecord first = recordTmp.get(0);
+
+            writer.write("T");
+            writer.write(ByteUtil.toHexText(first.address(), 3));
+            writer.write(ByteUtil.toHexText(bytesCounter, 1));
+
+            for (AssemblerObjectCode.TextRecord textRecord : recordTmp)
+                writer.write(ByteUtil.toHexText(textRecord.objects()));
+
+            writer.write(System.lineSeparator());
+        }
+
+        writer.write("E");
+        writer.write(ByteUtil.toHexText(objectCode.startAddress, 3));
+
+        writer.close();
+
+        return null;
     }
 }

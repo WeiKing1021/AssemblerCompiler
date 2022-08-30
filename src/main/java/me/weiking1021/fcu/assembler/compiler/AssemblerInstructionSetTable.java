@@ -47,7 +47,8 @@ public class AssemblerInstructionSetTable {
         put(create("OR", (short) 0x44, null, FORMAT_3, FORMAT_4));
         put(create("RD", (short) 0xD8, "P", FORMAT_3, FORMAT_4));
         put(create("RMO", (short) 0xAC, "X", FORMAT_2));
-        put(create("RSUB", (short) 0x4C, null, FORMAT_3, FORMAT_4));
+//        put(create("RSUB", (short) 0x4C, null, FORMAT_3, FORMAT_4));
+        put(create("RSUB", (short) 0x4C, null, FORMAT_1));
         put(create("SHIFTL", (short) 0xA4, "X", FORMAT_2));
         put(create("SHIFTR", (short) 0xA8, "X", FORMAT_2));
         put(create("SIO", (short) 0xF0, "PX", FORMAT_1));
@@ -78,5 +79,10 @@ public class AssemblerInstructionSetTable {
     private static void put(AssemblerInstructionSchema schema) {
 
         INST_MAP.put(schema.mnemonic, schema);
+    }
+
+    public static AssemblerInstructionSchema get(String mnemonic) {
+
+        return INST_MAP.get(mnemonic);
     }
 }

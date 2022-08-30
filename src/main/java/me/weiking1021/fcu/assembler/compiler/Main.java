@@ -13,6 +13,7 @@ public class Main {
 
         AssemblerIO.readSourceCodes(input).forEach(compiler::writeSourceCode);
 
-        compiler.compile();
+        AssemblerObjectCode objectCode = compiler.compile();
+        AssemblerIO.writeObjectCodes(output, objectCode);
     }
 }

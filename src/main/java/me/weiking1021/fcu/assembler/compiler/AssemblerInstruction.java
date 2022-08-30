@@ -131,6 +131,58 @@ public class AssemblerInstruction {
         return new AssemblerInstruction(label, opcode, operand, comment);
     }
 
+    public static byte[] genFormat1Code(short op) {
+
+        int value = 0;
+
+        value += op;
+
+        return ByteUtil.toByteArray(value, 1);
+    }
+
+    public static byte[] genFormat2Code(short op, short r1, short r2) {
+
+        int value = 0;
+
+        value += ((int) op) << 8;
+        value += ((int) r1) << 4;
+        value += ((int) r2);
+
+        return ByteUtil.toByteArray(value, 2);
+    }
+
+    public static byte[] genFormat3Code(short op, boolean n, boolean i, boolean x, boolean b, boolean p, boolean e, int disp) {
+
+        int value = 0;
+
+        value += ((int) op) << 18;
+        value += (n ? 1 : 0) << 17;
+        value += (i ? 1 : 0) << 16;
+        value += (x ? 1 : 0) << 15;
+        value += (b ? 1 : 0) << 14;
+        value += (p ? 1 : 0) << 13;
+        value += (e ? 1 : 0) << 12;
+        value += disp;
+
+        return ByteUtil.toByteArray(value, 3);
+    }
+
+    public static byte[] genFormat4Code(short op, boolean n, boolean i, boolean x, boolean b, boolean p, boolean e, int disp) {
+
+        int value = 0;
+
+        value += ((int) op) << 26;
+        value += (n ? 1 : 0) << 25;
+        value += (i ? 1 : 0) << 24;
+        value += (x ? 1 : 0) << 23;
+        value += (b ? 1 : 0) << 22;
+        value += (p ? 1 : 0) << 21;
+        value += (e ? 1 : 0) << 20;
+        value += disp;
+
+        return ByteUtil.toByteArray(value, 4);
+    }
+
     private static int lastIndexBeforeChar(String input, char endChar, char bucket) {
 
         char[] chars = input.toCharArray();
