@@ -10,9 +10,9 @@ CLOOP      +JSUB        RDREC       READ INPUT RECORD
             J           CLOOP       LOOP
 ENDFIL      LDA         EOF         INSERT END OF FILE MARKER
             STA         BUFFER
-            LJDA       #3           SET LEUXTGTH = 3
+            LDA        #3           SET LEUXTGTH = 3
             STA         LENGTH                                
-           +JSUB        WRREC       WRITE EOF              
+           +JSUB        WRREC       WRITE EOF
             J           @RETADR     RETURN TO CALLER
 EOF         BYTE        C'EOF'
 RETADR      RESW        1

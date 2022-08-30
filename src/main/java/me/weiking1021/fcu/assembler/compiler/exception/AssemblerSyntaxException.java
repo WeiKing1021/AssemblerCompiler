@@ -4,6 +4,6 @@ public class AssemblerSyntaxException extends RuntimeException {
 
     public AssemblerSyntaxException(String line) {
 
-        super("Illegal syntax in input text'" + line + "'");
+        super("Illegal syntax in input text '" + line + "'");
     }
 }

@@ -1,6 +1,11 @@
 package me.weiking1021.fcu.assembler.compiler;
 
+import me.weiking1021.fcu.assembler.compiler.exception.AssemblerInstructionException;
 import me.weiking1021.fcu.assembler.compiler.exception.AssemblerSyntaxException;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AssemblerInstruction {
 
@@ -23,12 +28,51 @@ public class AssemblerInstruction {
         this.comment = comment;
     }
 
-    public AssemblerFormat formatType() {
+    public AssemblerFormat parseFormatType() {
 
-        if (opcode.charAt(0) == TOKEN_EXT_FORMAT)
+        if (opcode.charAt(0) == TOKEN_EXT_FORMAT) {
+
+            String originOpcode = opcode.substring(1);
+
+            AssemblerInstructionSchema schema = AssemblerInstructionSetTable.INST_MAP.get(originOpcode);
+
+            if (schema == null)
+                throw new AssemblerInstructionException("Undefined opcode '" + opcode + "'");
+
+            if (!schema.formats.contains(AssemblerFormat.FORMAT_4))
+                throw new AssemblerInstructionException("Unsupported format '" + AssemblerFormat.FORMAT_4 +
+                    "' with opcode '" + opcode + "'");
+
             return AssemblerFormat.FORMAT_4;
+        }
 
-        return AssemblerFormat.FORMAT_3;
+        AssemblerInstructionSchema schema = AssemblerInstructionSetTable.INST_MAP.get(opcode);
+
+        if (schema == null)
+            throw new AssemblerInstructionException("Undefined opcode '" + opcode + "'");
+
+        if (schema.formats.isEmpty())
+            throw new AssemblerInstructionException("Empty format set");
+
+        if (schema.formats.size() == 1) {
+
+            AssemblerFormat format = schema.formats.iterator().next();
+
+            if (format == AssemblerFormat.FORMAT_4)
+                throw new AssemblerInstructionException("Unsupported format '" + AssemblerFormat.FORMAT_4 +
+                    "' with opcode '" + opcode + "'");
+
+            return format;
+        }
+
+        Set<AssemblerFormat> resultSet = schema.formats.stream()
+            .filter(format -> format != AssemblerFormat.FORMAT_4)
+            .collect(Collectors.toSet());
+
+        if (resultSet.size() !=1)
+            throw new AssemblerInstructionException("Multiple formats predict with instruction: " + this);
+
+        return resultSet.iterator().next();
     }
 
     public static AssemblerInstruction parse(String nextLine) {
@@ -87,7 +131,6 @@ public class AssemblerInstruction {
         return new AssemblerInstruction(label, opcode, operand, comment);
     }
 
-
     private static int lastIndexBeforeChar(String input, char endChar, char bucket) {
 
         char[] chars = input.toCharArray();
@@ -141,5 +184,15 @@ public class AssemblerInstruction {
         }
 
         return -1;
+    }
+
+    @Override
+    public String toString() {
+        return "AssemblerInstruction{" +
+            "label='" + label + '\'' +
+            ", opcode='" + opcode + '\'' +
+            ", operand='" + operand + '\'' +
+            ", comment='" + comment + '\'' +
+            '}';
     }
 }
