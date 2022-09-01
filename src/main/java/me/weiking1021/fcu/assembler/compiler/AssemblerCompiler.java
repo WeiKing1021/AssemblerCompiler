@@ -281,6 +281,18 @@ public class AssemblerCompiler {
                     }
                 }
 
+                if (instruction.opcode.equals("STL")) {
+
+                    System.out.println("Address: " + address);
+                    System.out.println("PC: " + programCounter);
+                    System.out.println("N: " + (n ? 1 : 0));
+                    System.out.println("I: " + (i ? 1 : 0));
+                    System.out.println("X: " + (x ? 1 : 0));
+                    System.out.println("B: " + (b ? 1 : 0));
+                    System.out.println("P: " + (p ? 1 : 0));
+                    System.out.println("E: " + (e ? 1 : 0));
+                }
+
                 resultBytes = AssemblerInstruction.genFormat3Code(schema.opcode, n, i, x, b, p, e, ta);
             }
             else if (format == FORMAT_4) {

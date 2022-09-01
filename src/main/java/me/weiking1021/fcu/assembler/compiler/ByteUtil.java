@@ -40,7 +40,7 @@ public class ByteUtil {
             buffer.append(text.length() % 2 == 0 ? text : '0' + text);
         }
 
-        return buffer.toString();
+        return buffer.toString().toUpperCase();
     }
 
     public static String toHexText(int value, int length) {

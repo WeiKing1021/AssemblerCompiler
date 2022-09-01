@@ -155,7 +155,7 @@ public class AssemblerInstruction {
 
         int value = 0;
 
-        value += ((int) op) << 18;
+        value += ((int) op) << 16;
         value += (n ? 1 : 0) << 17;
         value += (i ? 1 : 0) << 16;
         value += (x ? 1 : 0) << 15;
@@ -171,7 +171,7 @@ public class AssemblerInstruction {
 
         int value = 0;
 
-        value += ((int) op) << 26;
+        value += ((int) op) << 24;
         value += (n ? 1 : 0) << 25;
         value += (i ? 1 : 0) << 24;
         value += (x ? 1 : 0) << 23;

@@ -1,5 +1,5 @@
 COPY        START       0           COPY FILE FROM INPUT TO OUTPUT
-FIRST       STL         RETADR      SAVE RETURN ADDRESS
+FIRST       STL         RETADR      SAVE RETURN ADDRESS >> 14202D
             LDB        #LENGTH      ESTABLISH BASE REGISTER
             BASE        LENGTH
 CLOOP      +JSUB        RDREC       READ INPUT RECORD
